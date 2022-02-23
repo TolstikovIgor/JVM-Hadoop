@@ -1,0 +1,104 @@
+%sh
+python -m pip install kaggle
+
+%sh
+export KAGGLE_USERNAME=igortolstikov
+export KAGGLE_KEY=524727b41fcb457aed1bd7d65fac6f96
+mkdir -p /home/hduser/vgsales
+cd /home/hduser/vgsales
+kaggle datasets files gregorut/videogamesales
+kaggle datasets download gregorut/videogamesales
+
+%sh
+cd /home/hduser/vgsales
+unzip videogamesales.zip
+rm videogamesales.zip
+ls -la
+
+%sh
+hdfs dfs -put /home/hduser/vgsales /user/hduser/
+hdfs dfs -ls /user/hduser/vgsales
+
+%sh
+hdfs dfs -cat /user/hduser/vgsales/vgsales.csv | head
+
+%sh
+echo "%table"
+hdfs dfs -cat /user/hduser/vgsales/vgsales.csv | tr ',' '\t'
+
+%hive
+show tables;
+
+%sh
+hdfs dfs -ls /user/hduser/vgsales/
+
+%sh
+hdfs dfs -cat /user/hduser/vgsales/vgsales.csv | head
+
+%hive
+create table vgsales_set(Rank INT, name STRING, Platform STRING, year INT, Genre STRING, Publisher STRING, NA_Sales INT, EU_Sales INT, JP_Sales INT, Other_Sales INT, Global_Sales INT)
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE
+    TBLPROPERTIES('skip.header.line.count'='1')    
+
+%hive
+show tables;
+
+%hive
+LOAD DATA INPATH '/user/hduser/vgsales/vgsales.csv' INTO TABLE vgsales_set;
+
+%hive
+SELECT year, Count(*) as count FROM vgsales_set GROUP BY year
+
+%sh
+hdfs dfs -ls /user/hduser/vgsales
+
+%sh
+hdfs dfs -ls /user/hive/warehouse/
+
+%sh
+hdfs dfs -ls /user/hive/warehouse/*
+
+%sh
+hdfs dfs -cp /user/hive/warehouse/vgsales_set/vgsales.csv /user/hduser/vgsales/
+
+%sh
+hdfs dfs -ls /user/hduser/vgsales
+
+
+
+
+
+%hive
+SELECT Genre, Max(NA_Sales) as max FROM vgsales_set GROUP BY Genre
+
+
+
+
+%hive
+SELECT Genre, Max() as max FROM vgsales_set GROUP BY year
+
+
+ 
+%spark
+val df = sqlContext
+    .read
+    .format("csv")
+    .option("header", "true")
+    .option("interSchema", "true")
+    .load("/user/hduser/vgsales/vgsales.csv")
+
+val rows = df.groupBy("year").count().collect()
+
+val data = rows.map(row => row.getInt(0) + "\t" + row.getLong(1))
+
+println("%table\n" + "year\count\n" + data.mkString("\n"))
+
+df.show 
+    
+println("%table")
+println("year\tcount")
+rows.map{ row => s"${row.getInt(0)}\t${row.getLong(1)}" }.map(println)
+
+
