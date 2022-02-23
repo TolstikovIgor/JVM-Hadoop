@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+ext.hdp = "2.10.1"
+
+dependencies {
+    compileOnly "org.apache.hadoop:hadoop-hdfs:$hdp",
+            "org.apache.hadoop:hadoop-mapreduce-client-core:$hdp",
+            "org.apache.hadoop:hadoop-common:$hdp"
+}
