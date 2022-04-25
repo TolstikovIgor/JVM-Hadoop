@@ -1,5 +1,5 @@
 ## Урок 5. Интерактивный анализ данных в Apache Zeppelin
-#### Домашнее задание
+#### Курсовой проект
 1. Установите Apache Zeppelin и настройте интеграцию с Apache Spark
 2. Скачайте датасет [Video Game Sales](https://www.kaggle.com/gregorut/videogamesales)
 3. Выведите самую продаваемую игру за всё время
