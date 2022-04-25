@@ -2,6 +2,8 @@
 ![](logo.png)
 #### Факультет Data Engineering
 ____
+[Курсовой проект](https://github.com/TolstikovIgor/JVM-Hadoop/tree/main/lesson5)
+___
 #### [Урок 1. JVM, Apache Hadoop и Scala](https://github.com/TolstikovIgor/JVM-Hadoop/tree/main/lesson1)
 Виртуальные Машины. Архитектура Java. Компиляция Кода. Class Loader. Memory Model. Структура Jvm. Работа Jvm. Данные В Куче. Фрагментация Памяти. 
 
